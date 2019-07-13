@@ -1,7 +1,7 @@
 {
 	"name": "vscode-cognitive-speech",
 	"displayName": "vscode-cognitive-speech",
-	"description": "vscode extension for text-to-speech (TTS) using Azure Cognitive Services",
+	"description": "vscode extension for TTS (text-to-speech) using Azure Cognitive Services",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.0.0"
