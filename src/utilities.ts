@@ -47,9 +47,10 @@ export class Utilities {
         player.play({
             path: soundfile,
         }).then(() => {
-            console.log('The sound file started to be played successfully.');
+            // console.log('The sound file started to be played successfully.');
         }).catch((error:any) => {
             console.error(error);
+            throw new Error(`Sound file play failed: ${error.message}`);
         });
     }
 

@@ -2,9 +2,12 @@
 	"name": "vscode-translator-voice",
 	"displayName": "Translator Voice",
 	"description": "VSCode Extension for Text Translation and TTS (text-to-speech) using Azure Cognitive Services",
-	"version": "0.0.1",
+	"version": "0.1.0",
+	"publisher": "yokawasa",
+	"repository": "https://github.com/yokawasa/vscode-translator-voice",
+	"icon": "assets/icon.png",
 	"engines": {
-		"vscode": "^1.0.0"
+		"vscode": "^1.36.0"
 	},
 	"categories": [
 		"Other"
@@ -38,12 +41,12 @@
 			"properties": {
 				"translatorvoice.subKeyTranslator": {
 					"type": "string",
-					"default": "*******************************",
+					"default": "********************************",
 					"description": "Subscription Key for Azure Cognitive Translator API"
 				},
 				"translatorvoice.subKeySpeech": {
 					"type": "string",
-					"default": "*******************************",
+					"default": "********************************",
 					"description": "Subscription Key for Azure Cognitive Speech API"
 				},
 				"translatorvoice.regionSpeechApi": {
