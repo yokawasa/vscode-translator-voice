@@ -1,7 +1,7 @@
 {
-	"name": "vscode-cognitive-speech",
-	"displayName": "vscode-cognitive-speech",
-	"description": "vscode extension for TTS (text-to-speech) using Azure Cognitive Services",
+	"name": "vscode-translator-voice",
+	"displayName": "Translator Voice",
+	"description": "VSCode Extension for Text Translation and TTS (text-to-speech) using Azure Cognitive Services",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.0.0"
@@ -16,47 +16,55 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "extension.ttson",
-				"title": "text to speech on"
+				"command": "extension.translatorvoice.togglevoice",
+				"title": "TranslatorVoice: Toggle Voice"
+			},
+			{
+				"command": "extension.translatorvoice.translate",
+				"title": "TranslatorVoice: Translate"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "extension.ttson",
-				"key": "ctrl+t",
-				"mac": "cmd+t",
-				"when": "editorTextFocus"
-			},
-			{
-				"command": "extension.ttsplay",
-				"key": "ctrl+shift+r",
-				"mac": "cmd+shift+r",
+				"command": "extension.translatorvoice.translate",
+				"key": "ctrl+shift+t",
+				"mac": "cmd+shift+t",
 				"when": "editorTextFocus"
 			}
 		],
 		"configuration": {
 			"type": "object",
-			"title": "text to speech configuration",
+			"title": "Translator Voice Configuration",
 			"properties": {
-				"tts.subscriptionKey": {
+				"translatorvoice.subKeyTranslator": {
 					"type": "string",
-					"default": "***********************",
-					"description": "subscription Key"
+					"default": "*******************************",
+					"description": "Subscription Key for Azure Cognitive Translator API"
 				},
-				"tts.region": {
+				"translatorvoice.subKeySpeech": {
 					"type": "string",
-					"default": "*********",
-					"description": "region"
+					"default": "*******************************",
+					"description": "Subscription Key for Azure Cognitive Speech API"
 				},
-				"tts.fromLanguage": {
+				"translatorvoice.regionSpeechApi": {
 					"type": "string",
-					"default": "en",
-					"description": "from language"
+					"default": "japaneast",
+					"description": "Region for Azure Cognitive Speech API (ex, japaneast)"
 				},
-				"tts.targetLanguage": {
+				"translatorvoice.targetLanguage": {
 					"type": "string",
-					"default": "zh-CN",
-					"description": "target language"
+					"default": "ja",
+					"description": "Target Language Code (en, fr, de, ja, zh-Hans,...)"
+				},
+				"translatorvoice.defaultVoiceEnabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether to enabled voice feature by default (true or false)"
+				},
+				"translatorvoice.voiceGender": {
+					"type": "string",
+					"default": "female",
+					"description": " Gender for Speaker voice (male or female)"
 				}
 			}
 		}
@@ -73,8 +81,7 @@
 		"@types/mocha": "^5.2.6",
 		"@types/node": "^10.12.21",
 		"@types/vscode": "^1.36.0",
-		"@types/request-promise": "^4.1.44",
-		"@types/xmlbuilder": "^0.0.35",
+		"@types/needle": "^2.0.4",
 		"@types/md5": "^2.1.33",
 		"glob": "^7.1.4",
 		"mocha": "^6.1.4",
@@ -84,11 +91,10 @@
 	},
 	"dependencies": {
 		"fs": "0.0.1-security",
+		"md5": "^2.2.1",
+		"needle": "^2.2.4",
 		"node-wav-player": "^0.1.0",
 		"readline-sync": "^1.4.9",
-		"request": "^2.88.0",
-		"request-promise": "^4.2.4",
-		"xmlbuilder": "^10.1.1",
-		"md5": "^2.2.1"
+		"uuidv4": "^4.0.0"
 	}
 }

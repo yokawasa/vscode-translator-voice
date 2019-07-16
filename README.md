@@ -1,65 +1,68 @@
-# vscode-cognitive-speech README
+# vscode-translator-voice
 
-This is the README for your extension "vscode-cognitive-speech". After writing up a brief description, we recommend including the following sections.
+VSCode Extension for Text Translation and TTS (text-to-speech) using [Azure Cognitive Services](https://azure.microsoft.com/en-us/services/cognitive-services/). 
+
+> **Very Important** - In order to use this extension you must have a Azure Cognitive Services account with Translator Text and Speech Service resources. If you don't have it already, get one [here](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account)
+
+![](assets/vscode-translator-voice.png)
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **Text Translation** (using V3 Translator API of Azure Cognitive Services)
+- **Text-to-speech** (using TTS API of Azure Cognitive Services)
+- **Multi-Language support** (See [this](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail)
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+You must have an `Azure Cognitive Services account` with a `Translator Text` and a `Speech Services` resources.
+If you don't have an account, please create:
+- [Create a Cognitive Services account](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account)
+
+## Usage
+#### Configure Extension Settings
+Please see [Extension Settings](#extension-settings)
+
+#### Select target text in your editor to translate 
+You need to select target text in your editor to translate. Without it, you can not execute the command.
+
+#### Execute "TranslatorVoice: Translate" command
+Execute `TranslatorVoice: Translate` command from command palette like this:
+
+![](assets/command-translate.png)
+
+You can exectue the command with a shortcut key:`CTL + Shift + T` (Mac:`Cmd + Shift + T`) as well.
+
+Then, translated text will be added to Output window like this:
+![](assets/translation-output.png) 
+
+
+#### Disable/Enable Voice feature
+You can disable/enable Voice feature by (1) executing `TranslatorVoice: Toggle Voice` command from command palette, or (2) clicking statusBarItem named `Translate (Voice ON)` like this:
+
+![](assets/toggle-voice.png)
+
+By toggling the statusBarItem, you can enable/disable the Voice.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Configure the extension settings through the `contributes.configuration` extension point.
 
-For example:
+The extension contributes the following settings:
 
-This extension contributes the following settings:
+* `translatorvoice.subKeyTranslator`: Subscription Key for Cognitive Translator API
+* `translatorvoice.subKeySpeech`: Subscription Key for Cognitive Speech API
+* `translatorvoice.regionSpeechApi` : Region for Cognitive Speech API (ex, japaneast, eastus, ...). Please refer to [this page](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech) for the detail of available region for the API
+* `translatorvoice.defaultTargetLanguage`: Target Language Code (en, fr, de, ja, zh-Hans,...). Please refer to [this page](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail of supported language code. 
+* `translatorvoice.defaultVoiceEnabled`: Whether to enabled voice capability by default: true|false
+* `translatorvoice.defaultVoiceGender`: Default Gender for speaker (male|female)
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+Please go to `Settings` and choose `Translator Voice Configuration` in `Extensions` group in User settings, and update the settings options above.
 
-## Known Issues
+![](assets/contribution-configurations.png)
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Change Log
+See [Change Log](CHANGELOG.md)
 
-## Release Notes
+## Contributing
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Bug reports and pull requests are welcome on GitHub at https://github.com/yokawasa/vscode-translator-voice

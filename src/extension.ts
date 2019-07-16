@@ -2,176 +2,166 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as xmlbuilder from 'xmlbuilder';
-import * as request from 'request-promise';
-import * as md5 from 'md5';
 import * as fs from 'fs';
-import * as path from 'path';
-const player = require('node-wav-player');
+import {AzureCognitiveClient } from './azcognitive';
+import { Utilities } from "./utilities";
+import { Languages } from "./languages";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-cognitive-speech" is now active!');
+    // Use the console to output diagnostic information (console.log) and errors (console.error)
+    // This line of code will only be executed once when your extension is activated
+    console.log('VSCode extension "vscode-translator-voice" is now active!');
 
-	let isActive: Boolean,
-	    statusBarItem: vscode.StatusBarItem,
-		selections: vscode.Selection[],
-		privateStoragePath: string,
+    let isVoiceEnabled: Boolean,
+        statusBarItem: vscode.StatusBarItem,
+        selections: vscode.Selection[],
+        privateStoragePath: string,
+        targetLanguageCode: string,
+        voiceGenderName: string,
+        isVerified: Boolean,
+        apiclient: any;
 
-		getSSMLBody: (input: string) => string = (input:string) => {
-			return xmlbuilder.create('speak')
-				.att('version', '1.0')
-				.att('xml:lang', 'en-us')
-				.ele('voice')
-				.att('xml:lang', 'en-us')
-				//.att('name', 'en-US-Guy24kRUS') // Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
-				.att('name', 'en-US-JessaRUS') // Short name for 'Microsoft Server Speech Text to Speech Voice (en-US, Guy24KRUS)'
-				.txt(input)
-				.end().toString();
-		},
+    let initialize: ()=> Boolean =() => {
+        isVoiceEnabled = true;
+        // About 'context.storagePath':
+        // * An absolute file path of a workspace specific directory in which the extension
+        // * can store private state. The directory might not exist on disk and creation is
+        // * up to the extension. However, the parent directory is guaranteed to be existent.
+        privateStoragePath = ( context.storagePath ) ? context.storagePath : "",
+        console.log(`context.storagePath=${context.storagePath}`);
+        if (privateStoragePath !== "" && !fs.existsSync(privateStoragePath)) {
+            console.log('First time and create dir: ' + privateStoragePath);
+            fs.mkdirSync(privateStoragePath);
+        }
 
-		getSoundFilePath: (input: string) => string = (input:string) => {
-			let fileId = md5( Buffer.from(input).toString('base64') );
-			return path.join(
-				privateStoragePath,
-				fileId + ".wav" );
-		},
+        let { 
+            subKeyTranslator,
+            subKeySpeech,
+            regionSpeechApi,
+            targetLanguage,
+            defaultVoiceEnabled,
+            voiceGender 
+        } = Utilities.getConfig();
 
-		playSound: (soundfile: string) => void = (soundfile:string) => {
-			player.play({
-				path: soundfile,
-			}).then(() => {
-				console.log('The sound file started to be played successfully.');
-			}).catch((error:any) => {
-				console.error(error);
-			});
-		};
+        isVoiceEnabled = defaultVoiceEnabled;
+        targetLanguageCode = targetLanguage;
+        voiceGenderName = voiceGender;
 
-	let executeTTS: ()=> any = async() => {
-		if (!isActive) { return; }	
-	    let { tts: {
-				subscriptionKey,
-				region,
-				targetLanguage,
-				fromLanguage} 
-			} = vscode.workspace.getConfiguration();
+        // Setup: StatusBarItem
+        statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+        statusBarItem.command = 'extension.translatorvoice.togglevoice';
+        statusBarItem.text = (isVoiceEnabled) ? "Translate (Voice ON)" : "Translate (Voice OFF)";
+        statusBarItem.show();
 
-		console.log('subscriptionKey=' + subscriptionKey);
-		console.log('region=' + region);
-		console.log('targetLanguage=' + targetLanguage);
-		console.log('fromLanguage=' + fromLanguage);
+        // Create apiclient Instance
+        apiclient = new AzureCognitiveClient(
+                subKeyTranslator,
+                subKeySpeech,
+                regionSpeechApi,
+                privateStoragePath);
 
-		try {
+        // Validation Check for Contribution Configurations
+        if (!Languages.isSupportedlanguageCode(targetLanguageCode )) {
+            vscode.window.showErrorMessage(`[TranslatorVoice] Not Supported Language code!: ${targetLanguageCode}`);
+            isVerified = false;
+            return false;
+        }
+        if (!Languages.isSupportedGender(voiceGenderName)) {
+            vscode.window.showErrorMessage(`[TranslatorVoice] Not Supported Gendere name! Please choose male or female: ${voiceGenderName}`);
+            isVerified = false;
+            return false;
+        }
+        if ( 
+            isVoiceEnabled 
+                && Utilities.isEmptyString( 
+                    Languages.getVoiceName(
+                        Languages.getBestLocale(targetLanguageCode),
+                        voiceGenderName)
+                    ) 
+        ) {
+            vscode.window.showInformationMessage(`There is no voice available that match your target language (${targetLanguageCode}) and voice gender (${voiceGenderName}), therefore Voice is disabled`);
+            isVoiceEnabled = false;
+        }
+        isVerified = true;
+        return true;
+    };
 
-		  	if (!vscode.window.activeTextEditor) {
-				vscode.window.showErrorMessage('Must select text to speech');
-   				return;
-			}
-			selections = vscode.window.activeTextEditor.selections;				  
-			if (selections.length > 1) {
-				console.log("multiple text are selected");
-				// Skip
-				// TODO: multi selected text
-			}
-			let selection: vscode.Selection = selections[0];
-			let text:string = 
-				vscode.window.activeTextEditor.document.getText(
-						new vscode.Range(selection.start, selection.end
-					));
+    let execute: ()=> any = async() => {
 
-			// Request(1) - Get Access Token
-			request(
-			{
-				method: 'POST',
-				uri: 'https://' + region + '.api.cognitive.microsoft.com/sts/v1.0/issueToken',
-				headers: {
-					'Ocp-Apim-Subscription-Key': subscriptionKey
-				}
-			}).then( body => {
-				let accessToken = body;
-				let wavfile = getSoundFilePath(text);
-				console.log('\nwavfile=' + wavfile);
+        try {
+            if (!isVerified) {
+                vscode.window.showErrorMessage('Can not translate due to insufficient configuration!');
+                return;
+            }
+            if (!vscode.window.activeTextEditor) {
+                vscode.window.showErrorMessage('Please select your text to execute TranslatorVoice!');
+                return;
+            }
+            selections = vscode.window.activeTextEditor.selections;				  
+            if (selections.length > 1) {
+                vscode.window.showErrorMessage('[TranslatorVoice] Sorry, multiple text is not supported!');
+                // Skip
+                // FIXME: multi selected text
+                return;
+            }
+            let selection: vscode.Selection = selections[0];
+            let text:string = 
+                vscode.window.activeTextEditor.document.getText(
+                    new vscode.Range(selection.start, selection.end
+                ));
+            if (text.length < 1) {
+                vscode.window.showErrorMessage('Please select your text to execute TranslatorVoice!');
+                return;
+            }           
+            // Now you are ready to execute translation and speak
+            vscode.window.showInformationMessage(`Translating your text: Target Language (${targetLanguageCode})`);
+            if (isVoiceEnabled) {
+                apiclient.translate_speak(text, targetLanguageCode, voiceGenderName);
+            } else {
+                apiclient.translate(text, targetLanguageCode);
+            }
 
-				// Request(2) - Get Speech Sound
-				new Promise( (resolve, reject) => {
-				request(
-					{
-						method: 'POST',
-						baseUrl: 'https://' + region + '.tts.speech.microsoft.com/',
-						url: 'cognitiveservices/v1',
-						headers: {
-							'Authorization': 'Bearer ' + accessToken,
-							'cache-control': 'no-cache',
-							'User-Agent': 'YOUR_RESOURCE_NAME',
-							'X-Microsoft-OutputFormat': 'riff-24khz-16bit-mono-pcm',
-							'Content-Type': 'application/ssml+xml'
-						},
-						body: getSSMLBody(text)
-				})
-				.pipe(
-					fs.createWriteStream(wavfile)
-				)
-				.on ('finish', ()=> {
-					// Sound file is ready, and all done
-					console.log('File is ready!!');
-					playSound(wavfile);
-					resolve();
-				})
-				.on('error', (error:any) => {
-					console.log(`Request failure: ${error}`);
-					reject(error);
-				}); // end-of-request(2)
-				}) 	
-				.catch(error => {
-					console.log(`Something happened: ${error}`);
-				}); // end-of-promise
-			});  // end-of-request(1)
+        } catch (err) {
+            console.log(`[TranslatorVoice] Something went wrong in executing api request: ${err}`);
+            vscode.window.showErrorMessage('[TranslatorVoice] Something went wrong. Please see debug console for the detail');
+        }
+    };
 
+    initialize();
 
-		} catch (err) {
-			console.log(`Something went wrong: ${err}`);
-		}
-	};
+    // The command has been defined in the package.json file
+    // Now provide the implementation of the command with registerCommand
+    // The commandId parameter must match the command field in package.json
+    context.subscriptions.push(
+        vscode.commands.registerCommand('extension.translatorvoice.togglevoice', () => {
+            if (!isVoiceEnabled){
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	context.subscriptions.push(
-		vscode.commands.registerCommand('extension.ttson', () => {
-			// The code you place here will be executed every time your command is executed
-			// Display a message box to the user
-			if (isActive){
-				isActive = false;
-				vscode.window.showInformationMessage('TTS OFF!');
-				statusBarItem.dispose();
-			} else {
-				isActive = true;
-				// About 'context.storageApth':
-				// * An absolute file path of a workspace specific directory in which the extension
-				// * can store private state. The directory might not exist on disk and creation is
-				// * up to the extension. However, the parent directory is guaranteed to be existent.
-				privateStoragePath = ( context.storagePath ) ? context.storagePath : "";
-				if (privateStoragePath !== "" && !fs.existsSync(privateStoragePath)) {
-					console.log('First time and create dir: ' + privateStoragePath);
-					fs.mkdirSync(privateStoragePath);
-				}
-
-				vscode.window.showInformationMessage('TTS ON!');
-				statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-			}
-		}),
-		vscode.commands.registerCommand('extension.ttsplay', () => {
-			// The code you place here will be executed every time your command is executed
-			if (isActive){
-				vscode.window.showInformationMessage('TTS Play!');
-				executeTTS();
-			}
-		})
-	);
+                if ( Utilities.isEmptyString(
+                        Languages.getVoiceName(
+                            Languages.getBestLocale(targetLanguageCode),
+                            voiceGenderName)
+                        ) 
+                ) {
+                    vscode.window.showInformationMessage(`There is no voice available that can match your target language (${targetLanguageCode}) and voice gender (${voiceGenderName}), therefore Voice cannot be enabled`);
+                    isVoiceEnabled = false;
+                } else {
+                    isVoiceEnabled = true;
+                    statusBarItem.text = "Translate (Voice ON)";
+                    vscode.window.showInformationMessage(`TranslatorVoice: Voice is enabled: Target Language (${targetLanguageCode})`);
+                }
+            } else {
+                isVoiceEnabled = false;
+                statusBarItem.text = "Translate (Voice OFF)";
+                vscode.window.showInformationMessage(`TranslatorVoice: Voice is disabled`);
+            }
+        }),
+        vscode.commands.registerCommand('extension.translatorvoice.translate', () => {
+            execute();
+        }),
+    );
 }
 
 // this method is called when your extension is deactivated
