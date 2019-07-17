@@ -12,6 +12,8 @@ This is a vscode extension for multi-language text translation and TTS (text-to-
 - **Text-to-speech** (using TTS API of Azure Cognitive Services)
 - **Multi-Language support** (See [this](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail)
 
+![](assets/video-vscode-translator-voice.gif)
+
 ## Requirements
 
 You must have an `Azure Cognitive Services account` with a `Translator Text` and a `Speech Services` resources.
