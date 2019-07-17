@@ -1,10 +1,14 @@
 {
 	"name": "vscode-translator-voice",
 	"displayName": "Translator Voice",
-	"description": "VSCode Extension for Text Translation and TTS (text-to-speech) using Azure Cognitive Services",
+	"description": "Multi-language text translation and TTS (text-to-speech) using Azure Cognitive Services",
 	"version": "0.1.0",
+	"license": "MIT",
 	"publisher": "yokawasa",
-	"repository": "https://github.com/yokawasa/vscode-translator-voice",
+	"repository": {
+		"type": "git",
+        "url": "https://github.com/yokawasa/vscode-translator-voice.git"
+	},
 	"icon": "assets/icon.png",
 	"engines": {
 		"vscode": "^1.36.0"

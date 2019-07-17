@@ -1,6 +1,6 @@
 # vscode-translator-voice
 
-VSCode Extension for Text Translation and TTS (text-to-speech) using [Azure Cognitive Services](https://azure.microsoft.com/en-us/services/cognitive-services/). 
+This is a vscode extension for multi-language text translation and TTS (text-to-speech) using [Azure Cognitive Services](https://azure.microsoft.com/en-us/services/cognitive-services/).
 
 > **Very Important** - In order to use this extension you must have a Azure Cognitive Services account with Translator Text and Speech Service resources. If you don't have it already, get one [here](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account)
 
@@ -37,11 +37,9 @@ Then, translated text will be added to Output window like this:
 
 
 #### Disable/Enable Voice feature
-You can disable/enable Voice feature by (1) executing `TranslatorVoice: Toggle Voice` command from command palette, or (2) clicking statusBarItem named `Translate (Voice ON)` like this:
+You can disable/enable Voice feature by (1) executing `TranslatorVoice: Toggle Voice` command from command palette, or (2) toggling statusBarItem named `Voice [enabled/disabled]` like this:
 
 ![](assets/toggle-voice.png)
-
-By toggling the statusBarItem, you can enable/disable the Voice.
 
 ## Extension Settings
 
@@ -56,9 +54,15 @@ The extension contributes the following settings:
 * `translatorvoice.defaultVoiceEnabled`: Whether to enabled voice capability by default: true|false
 * `translatorvoice.defaultVoiceGender`: Default Gender for speaker (male|female)
 
-Please go to `Settings` and choose `Translator Voice Configuration` in `Extensions` group in User settings, and update the settings options above.
+First, open `Settings editor` from the following VS Code menu command or use the keyboard shortcut `CTL + ,` (Mac: `Cmd + ,`).
+- On Windows/Linux - File > Preferences > Settings
+- On macOS - Code > Preferences > Settings
+
+Then, choose `Translator Voice Configuration` in `Extensions` group in User settings, and finally update the settings options above.
 
 ![](assets/contribution-configurations.png)
+
+Please see also [this page](https://code.visualstudio.com/docs/getstarted/settings) for the detail of settings.
 
 ## Change Log
 See [Change Log](CHANGELOG.md)

@@ -29,6 +29,15 @@ export class Utilities {
         return vscode.workspace.getConfiguration("translatorvoice");
     }
 
+    /**
+     * Update Configuration data for the extension
+     * @param key 
+     * @param value 
+     */
+    public static updateConfig(key:string, value:any): void {
+        vscode.workspace.getConfiguration("translatorvoice").update(key, value, true);
+    }
+
     /** 
      * Generate Query String from params
      * @param params 

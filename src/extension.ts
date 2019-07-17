@@ -24,18 +24,30 @@ export function activate(context: vscode.ExtensionContext) {
         isVerified: Boolean,
         apiclient: any;
 
+    // Called only once
     let initialize: ()=> Boolean =() => {
         isVoiceEnabled = true;
         // About 'context.storagePath':
         // * An absolute file path of a workspace specific directory in which the extension
         // * can store private state. The directory might not exist on disk and creation is
         // * up to the extension. However, the parent directory is guaranteed to be existent.
-        privateStoragePath = ( context.storagePath ) ? context.storagePath : "",
-        console.log(`context.storagePath=${context.storagePath}`);
+        privateStoragePath = ( context.storagePath ) ? context.storagePath : "";
+        //console.log(`context.storagePath=${context.storagePath}`);
         if (privateStoragePath !== "" && !fs.existsSync(privateStoragePath)) {
             console.log('First time and create dir: ' + privateStoragePath);
             fs.mkdirSync(privateStoragePath);
         }
+
+        // Create StatusBarItem instance
+        statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+
+        // Show statusbarItem after resource loaded
+        statusBarItem.show();
+        loadConfig();
+        return true;
+    };
+
+    let loadConfig: ()=> Boolean =() => {
 
         let { 
             subKeyTranslator,
@@ -51,10 +63,8 @@ export function activate(context: vscode.ExtensionContext) {
         voiceGenderName = voiceGender;
 
         // Setup: StatusBarItem
-        statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
         statusBarItem.command = 'extension.translatorvoice.togglevoice';
-        statusBarItem.text = (isVoiceEnabled) ? "Translate (Voice ON)" : "Translate (Voice OFF)";
-        statusBarItem.show();
+        statusBarItem.text = (isVoiceEnabled) ? "Voice [enabled]" : "Voice [disabled]";
 
         // Create apiclient Instance
         apiclient = new AzureCognitiveClient(
@@ -136,6 +146,10 @@ export function activate(context: vscode.ExtensionContext) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     context.subscriptions.push(
+
+        // Trigger initalization when the configuration changed.
+        vscode.workspace.onDidChangeConfiguration( loadConfig ),
+        // Register commands
         vscode.commands.registerCommand('extension.translatorvoice.togglevoice', () => {
             if (!isVoiceEnabled){
 
@@ -149,12 +163,14 @@ export function activate(context: vscode.ExtensionContext) {
                     isVoiceEnabled = false;
                 } else {
                     isVoiceEnabled = true;
-                    statusBarItem.text = "Translate (Voice ON)";
+                    statusBarItem.text = "Voice [enabled]";
+                    Utilities.updateConfig("defaultVoiceEnabled", isVoiceEnabled);
                     vscode.window.showInformationMessage(`TranslatorVoice: Voice is enabled: Target Language (${targetLanguageCode})`);
                 }
             } else {
                 isVoiceEnabled = false;
-                statusBarItem.text = "Translate (Voice OFF)";
+                statusBarItem.text = "Voice [disabled]";
+                Utilities.updateConfig("defaultVoiceEnabled", isVoiceEnabled);
                 vscode.window.showInformationMessage(`TranslatorVoice: Voice is disabled`);
             }
         }),
