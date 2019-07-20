@@ -138,7 +138,7 @@ export class AzureCognitiveClient {
                     )
                     .on ('finish', ()=> {
                         // Sound file is ready, and all done
-                        Utilities.playSound(soundFilePath);
+                        Utilities.playSound(soundFilePath, true);
                     })
                     .on('error', (err:Error) => {
                         console.log(`Speech API request failure: ${err}`);

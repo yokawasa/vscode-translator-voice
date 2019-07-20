@@ -2,41 +2,33 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as fs from 'fs';
 import {AzureCognitiveClient } from './azcognitive';
 import { Utilities } from "./utilities";
 import { Languages } from "./languages";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context:vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('VSCode extension "vscode-translator-voice" is now active!');
 
-    let isVoiceEnabled: Boolean,
+    let isVoiceEnabled: boolean,
         statusBarItem: vscode.StatusBarItem,
         selections: vscode.Selection[],
-        privateStoragePath: string,
+        storagePath: string,
         targetLanguageCode: string,
         voiceGenderName: string,
-        isVerified: Boolean,
+        isVerified: boolean,
         apiclient: any;
 
     // Called only once
-    let initialize: ()=> Boolean =() => {
+    let initialize: ()=> boolean =() => {
         isVoiceEnabled = true;
-        // About 'context.storagePath':
-        // * An absolute file path of a workspace specific directory in which the extension
-        // * can store private state. The directory might not exist on disk and creation is
-        // * up to the extension. However, the parent directory is guaranteed to be existent.
-        privateStoragePath = ( context.storagePath ) ? context.storagePath : "";
-        //console.log(`context.storagePath=${context.storagePath}`);
-        if (privateStoragePath !== "" && !fs.existsSync(privateStoragePath)) {
-            console.log('First time and create dir: ' + privateStoragePath);
-            fs.mkdirSync(privateStoragePath);
-        }
+
+        // Get storage path for storing temporary data
+        storagePath = Utilities.getStoragePath(context);
 
         // Create StatusBarItem instance
         statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
@@ -47,7 +39,7 @@ export function activate(context: vscode.ExtensionContext) {
         return true;
     };
 
-    let loadConfig: ()=> Boolean =() => {
+    let loadConfig: ()=> boolean =() => {
 
         let { 
             subKeyTranslator,
@@ -71,7 +63,7 @@ export function activate(context: vscode.ExtensionContext) {
                 subKeyTranslator,
                 subKeySpeech,
                 regionSpeechApi,
-                privateStoragePath);
+                storagePath);
 
         // Validation Check for Contribution Configurations
         if (!Languages.isSupportedlanguageCode(targetLanguageCode )) {

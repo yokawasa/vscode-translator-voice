@@ -9,7 +9,7 @@ This is a vscode extension for multi-language text translation and TTS (text-to-
 ## Features
 
 - **Text Translation** (using V3 Translator API of Azure Cognitive Services)
-- **Text-to-speech** (using TTS API of Azure Cognitive Services)
+- **Text-to-speech** (using neural TTS engine API of Azure Cognitive Services)
 - **Multi-Language support** (See [this](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail)
 
 ![](assets/video-vscode-translator-voice.gif)
@@ -52,9 +52,9 @@ The extension contributes the following settings:
 * `translatorvoice.subKeyTranslator`: Subscription Key for Cognitive Translator API
 * `translatorvoice.subKeySpeech`: Subscription Key for Cognitive Speech API
 * `translatorvoice.regionSpeechApi` : Region for Cognitive Speech API (ex, japaneast, eastus, ...). Please refer to [this page](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/rest-text-to-speech) for the detail of available region for the API
-* `translatorvoice.defaultTargetLanguage`: Target Language Code (en, fr, de, ja, zh-Hans,...). Please refer to [this page](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail of supported language code. 
+* `translatorvoice.targetLanguage`: Target Language Code (en, fr, de, ja, zh-Hans,...). Please refer to [this page](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support#translation) for the detail of supported language code. 
 * `translatorvoice.defaultVoiceEnabled`: Whether to enabled voice capability by default: true|false
-* `translatorvoice.defaultVoiceGender`: Default Gender for speaker (male|female)
+* `translatorvoice.voiceGender`: Default Gender for speaker (male|female)
 
 First, open `Settings editor` from the following VS Code menu command or use the keyboard shortcut `CTL + ,` (Mac: `Cmd + ,`).
 - On Windows/Linux - File > Preferences > Settings
