@@ -1,21 +1,21 @@
 {
-	"name": "vscode-translator-voice",
-	"displayName": "Translator Voice",
-	"description": "Multi-language text translation and TTS (text-to-speech) using Azure Cognitive Services",
-	"version": "0.3.0",
-	"license": "MIT",
-	"publisher": "yokawasa",
-	"repository": {
-		"type": "git",
-        "url": "https://github.com/yokawasa/vscode-translator-voice.git"
-	},
-	"icon": "assets/icon.png",
-	"engines": {
-		"vscode": "^1.36.0"
-	},
-	"categories": [
-		"Other"
-	],
+  "name": "vscode-translator-voice",
+  "displayName": "Translator Voice",
+  "description": "Multi-language text translation and TTS (text-to-speech) using Azure Cognitive Services",
+  "version": "0.4.0",
+  "license": "MIT",
+  "publisher": "yokawasa",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yokawasa/vscode-translator-voice.git"
+  },
+  "icon": "assets/icon.png",
+  "engines": {
+    "vscode": "^1.36.0"
+  },
+  "categories": [
+    "Other"
+  ],
   "keywords": [
     "translate",
     "translator",
@@ -25,92 +25,102 @@
     "voice",
     "speech"
   ],
-	"activationEvents": [
-		"*"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.translatorvoice.togglevoice",
-				"title": "TranslatorVoice: Toggle Voice"
-			},
-			{
-				"command": "extension.translatorvoice.translate",
-				"title": "TranslatorVoice: Translate"
-			}
-		],
-		"keybindings": [
-			{
-				"command": "extension.translatorvoice.translate",
-				"key": "ctrl+shift+t",
-				"mac": "cmd+shift+t",
-				"when": "editorTextFocus"
-			}
-		],
-		"configuration": {
-			"type": "object",
-			"title": "Translator Voice Configuration",
-			"properties": {
-				"translatorvoice.subKeyTranslator": {
-					"type": "string",
-					"default": "********************************",
-					"description": "Subscription Key for Azure Cognitive Translator API"
-				},
-				"translatorvoice.subKeySpeech": {
-					"type": "string",
-					"default": "********************************",
-					"description": "Subscription Key for Azure Cognitive Speech API"
-				},
-				"translatorvoice.regionSpeechApi": {
-					"type": "string",
-					"default": "japaneast",
-					"description": "Region for Azure Cognitive Speech API (ex, japaneast)"
-				},
-				"translatorvoice.targetLanguage": {
-					"type": "string",
-					"default": "ja",
-					"description": "Target Language Code (en, fr, de, ja, zh-Hans,...)"
-				},
-				"translatorvoice.defaultVoiceEnabled": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether to enabled voice feature by default (true or false)"
-				},
-				"translatorvoice.voiceGender": {
-					"type": "string",
-					"default": "female",
-					"description": " Gender for Speaker voice (male or female)"
-				}
-			}
-		}
-	},
-	"scripts": {
-		"vscode:prepublish": "tsc -p ./",
-		"compile": "tsc -watch -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.6",
-		"@types/node": "^10.12.21",
-		"@types/vscode": "^1.36.0",
-		"@types/needle": "^2.0.4",
-		"@types/md5": "^2.1.33",
-		"glob": "^7.1.4",
-		"mocha": "^6.1.4",
-		"typescript": "^3.3.1",
-		"tslint": "^5.12.1",
-		"vscode-test": "^1.0.0-next.0"
-	},
-	"dependencies": {
-		"fs": "0.0.1-security",
-		"md5": "^2.2.1",
-		"needle": "^2.2.4",
-		"node-wav-player": "^0.1.0",
-		"readline-sync": "^1.4.9",
-		"uuidv4": "^4.0.0"
-	}
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.translatorvoice.togglevoice",
+        "title": "Toggle Voice",
+        "category": "TranslatorVoice"
+      },
+      {
+        "command": "extension.translatorvoice.translate",
+        "title": "Translate",
+        "category": "TranslatorVoice"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.translatorvoice.translate",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
+        "when": "editorHasSelection"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "extension.translatorvoice.translate",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Translator Voice Configuration",
+      "properties": {
+        "translatorvoice.subKeyTranslator": {
+          "type": "string",
+          "default": "********************************",
+          "description": "Subscription Key for Azure Cognitive Translator API"
+        },
+        "translatorvoice.subKeySpeech": {
+          "type": "string",
+          "default": "********************************",
+          "description": "Subscription Key for Azure Cognitive Speech API"
+        },
+        "translatorvoice.regionSpeechApi": {
+          "type": "string",
+          "default": "japaneast",
+          "description": "Region for Azure Cognitive Speech API (ex, japaneast)"
+        },
+        "translatorvoice.targetLanguage": {
+          "type": "string",
+          "default": "ja",
+          "description": "Target Language Code (en, fr, de, ja, zh-Hans,...)"
+        },
+        "translatorvoice.defaultVoiceEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to enabled voice feature by default (true or false)"
+        },
+        "translatorvoice.voiceGender": {
+          "type": "string",
+          "default": "female",
+          "description": " Gender for Speaker voice (male or female)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "tsc -p ./",
+    "compile": "tsc -watch -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.21",
+    "@types/vscode": "^1.36.0",
+    "@types/needle": "^2.0.4",
+    "@types/md5": "^2.1.33",
+    "glob": "^7.1.4",
+    "mocha": "^6.1.4",
+    "typescript": "^3.3.1",
+    "tslint": "^5.12.1",
+    "vscode-test": "^1.0.0-next.0"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "md5": "^2.2.1",
+    "needle": "^2.2.4",
+    "node-wav-player": "^0.1.0",
+    "readline-sync": "^1.4.9",
+    "uuidv4": "^4.0.0"
+  }
 }

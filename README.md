@@ -20,6 +20,12 @@ You must have an `Azure Cognitive Services account` with a `Translator Text` and
 If you don't have an account, please create:
 - [Create a Cognitive Services account](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account)
 
+## Installation
+- Open the `Command Palette` of VS Code with `Ctrl + P` or `Cmd + P`(Mac)
+- And type: `ext install yokawasa.vscode-translator-voice`
+
+or find at [Marketplace](https://marketplace.visualstudio.com/items?itemName=yokawasa.vscode-translator-voice)
+
 ## Usage
 #### Configure Extension Settings
 Please see [Extension Settings](#extension-settings)
@@ -65,6 +71,13 @@ Then, choose `Translator Voice Configuration` in `Extensions` group in User sett
 ![](assets/contribution-configurations.png)
 
 Please see also [this page](https://code.visualstudio.com/docs/getstarted/settings) for the detail of settings.
+
+## Commands & Shortcut
+
+| Command | Shortcut | Description |
+| --- | --- | --- |
+| `TranslatorVoice: Translate` | `CTL + Shift + T`<br> (Mac:`Cmd + Shift + T`) | Translate selected text in your editor. In addition, read the translated text with voice only if the voice feature is enabled. | 
+| `TranslatorVoice: Toggle Voice` | NONE | Disable/Enable Voice feature. | 
 
 ## Change Log
 See [Change Log](CHANGELOG.md)

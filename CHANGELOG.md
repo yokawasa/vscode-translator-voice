@@ -2,6 +2,11 @@
 
 All notable changes to the "vscode-translator-voice" extension will be documented in this file.
 
+## 0.4.0
+- Disable a command `extension.translatorvoice.translate` when editor Has no text selection
+- Add all commands to a category `TranslatorVoice`
+- Refactor code: `extension.ts`
+
 ## 0.3.0
 - Change a path for temporary sound data from workspace specific directory to global directory (`vscode.ExtensionContext.globalStoragePath`)
 - Unlink sound file after its playout
