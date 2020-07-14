@@ -2,7 +2,7 @@
   "name": "vscode-translator-voice",
   "displayName": "Translator Voice",
   "description": "Multi-language text translation and TTS (text-to-speech) using Azure Cognitive Services",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "MIT",
   "publisher": "yokawasa",
   "repository": {
@@ -104,15 +104,15 @@
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
+    "@types/md5": "^2.1.33",
     "@types/mocha": "^5.2.6",
+    "@types/needle": "^2.0.4",
     "@types/node": "^10.12.21",
     "@types/vscode": "^1.36.0",
-    "@types/needle": "^2.0.4",
-    "@types/md5": "^2.1.33",
     "glob": "^7.1.4",
-    "mocha": "^6.1.4",
-    "typescript": "^3.3.1",
+    "mocha": "^8.0.1",
     "tslint": "^5.12.1",
+    "typescript": "^3.3.1",
     "vscode-test": "^1.0.0-next.0"
   },
   "dependencies": {

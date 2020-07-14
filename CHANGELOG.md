@@ -2,6 +2,9 @@
 
 All notable changes to the "vscode-translator-voice" extension will be documented in this file.
 
+## 0.4.1
+- Fix security vulnerability: upgrade mocha to 8.0.1
+
 ## 0.4.0
 - Disable a command `extension.translatorvoice.translate` when editor Has no text selection
 - Add all commands to a category `TranslatorVoice`
