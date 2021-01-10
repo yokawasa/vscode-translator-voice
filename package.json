@@ -2,7 +2,7 @@
   "name": "vscode-translator-voice",
   "displayName": "Translator Voice",
   "description": "Multi-language text translation and TTS (text-to-speech) using Azure Cognitive Services",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "license": "MIT",
   "publisher": "yokawasa",
   "repository": {
