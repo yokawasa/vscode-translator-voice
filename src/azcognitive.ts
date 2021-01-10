@@ -9,8 +9,9 @@ import * as vscode from 'vscode';
 import { Languages } from "./languages";
 import { Utilities } from "./utilities";
 
+let outputChannel: vscode.OutputChannel;
+
 export class AzureCognitiveClient {
-   private outputChannel: vscode.OutputChannel;
 
   private AZ_COG_SPEECH_TOKEN_ENDPOINT="https://{0}.api.cognitive.microsoft.com/sts/v1.0/issueToken";
   private AZ_COG_SPEECH_TTS_ENDPOINT="https://{0}.tts.speech.microsoft.com/cognitiveservices/v1";
@@ -39,8 +40,9 @@ export class AzureCognitiveClient {
    * @param storageDirectory 
    */
   constructor(subKeyTranslator: string, subKeySpeech: string, regionSpeechAPi: string, storageDirectory: string) {
-    this.outputChannel = vscode.window.createOutputChannel('TranslatorVoice');
-
+    if(!outputChannel) {
+      outputChannel = vscode.window.createOutputChannel('TranslatorVoice');
+    }
     this.subKeyTranslator = subKeyTranslator;
     this.subKeySpeech = subKeySpeech;
     this.regionSpeechApi = regionSpeechAPi;
@@ -61,10 +63,10 @@ export class AzureCognitiveClient {
       let item:any = jsontext[0];
       let translated_text:string = item["translations"][0]["text"];
 
-      this.outputChannel.show();
-      this.outputChannel.appendLine(`Source: ${text}`);
-      this.outputChannel.appendLine(`Translation: ${translated_text}`);
-      this.outputChannel.appendLine('\n');
+      outputChannel.show();
+      outputChannel.appendLine(`Source: ${text}`);
+      outputChannel.appendLine(`Translation: ${translated_text}`);
+      outputChannel.appendLine('\n');
     })
     .catch((err: Error) => {
       throw new Error(`Translation API request failed: ${err.message}`);
@@ -84,10 +86,10 @@ export class AzureCognitiveClient {
       let item:any = jsontext[0];
       let translated_text:string = item["translations"][0]["text"];
 
-      this.outputChannel.show();
-      this.outputChannel.appendLine(`Source: ${text}`);
-      this.outputChannel.appendLine(`Translation: ${translated_text}`);
-      this.outputChannel.appendLine('\n');
+      outputChannel.show();
+      outputChannel.appendLine(`Source: ${text}`);
+      outputChannel.appendLine(`Translation: ${translated_text}`);
+      outputChannel.appendLine('\n');
 
       this.speak(translated_text, Languages.getBestLocale(targetlang), gender);
     })
